@@ -16,10 +16,8 @@ export class AuthService {
       SELECT * FROM \`users\` WHERE \`email\` = '${data.email}' AND \`password\` = '${data.password}'
     `;
 
-    console.log('Query: ', query);
     const user = await this.prismaService.$queryRawUnsafe(query);
 
-    console.log('User result: ', user);
     if (!user) throw new BadRequestException('Invalid email or password');
 
     const token = await this.jwtService.signAsync(
@@ -35,10 +33,18 @@ export class AuthService {
       },
     );
 
+    const updateQuery = `
+      UPDATE \`users\` 
+      SET \`token\` = '${token}' 
+      WHERE \`id\` = ${user[0].id}
+    `;
+
+    await this.prismaService.$queryRawUnsafe(updateQuery);
+
     return { token };
   }
 
-  async logout(id: string) {
+  async logout(id: number) {
     await this.prismaService.$queryRawUnsafe(`
       UPDATE \`users\` SET \`token\` = NULL WHERE \`id\` = '${id}';
     `);

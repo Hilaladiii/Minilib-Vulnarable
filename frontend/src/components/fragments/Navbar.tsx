@@ -1,15 +1,34 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Logo from "@/assets/logo.svg";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { User01 } from "@untitled-ui/icons-react";
+import { logout } from "@/services/auth";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { toast } = useToast();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const handleLogout = async () => {
+    const res = await logout();
+    if (res.statusCode == 200) {
+      router.push("/login");
+      toast({
+        description: res.message,
+      });
+    } else {
+      toast({
+        description: res.message,
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <nav className="fixed top-0 z-50 flex h-28 w-full flex-row items-center justify-around bg-white dark:bg-dark2 dark:text-light shadow-md">
@@ -24,7 +43,7 @@ export default function Navbar() {
           href={"/"}
           className={cn("", {
             "border-b-4 border-b-sky pb-1 transition-all duration-100":
-              pathname == "/",
+              pathname == "/user",
           })}
         >
           Home
@@ -33,7 +52,7 @@ export default function Navbar() {
           href={"/blog"}
           className={cn("", {
             "border-b-4 border-b-sky pb-1 transition-all duration-100":
-              pathname.includes("/blog"),
+              pathname.includes("/user/user-book"),
           })}
         >
           My Book
@@ -45,17 +64,10 @@ export default function Navbar() {
           <div className="absolute -bottom-32 hidden space-y-3 rounded bg-white p-2 shadow-md group-hover:flex group-hover:flex-col dark:bg-dark1 dark:text-light">
             <Link href={"/"}>My Profile</Link>
             <Link href={"/"}>My Favorite</Link>
-            <Button onClick={() => {}}>SignOut</Button>
+            <Button onClick={handleLogout}>Logout</Button>
           </div>
         </div>
       </div>
-      {isOpen && (
-        <div className="absolute -bottom-28 right-5 z-50 flex flex-col gap-3 bg-white p-5 shadow-md dark:bg-dark2 dark:text-white">
-          <Link href="/">Home</Link>
-          <Link href="/blog">Blog</Link>
-          <Button onClick={() => {}}>SignOut</Button>
-        </div>
-      )}
     </nav>
   );
 }

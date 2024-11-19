@@ -37,9 +37,19 @@ export class BookService {
 
   async find() {
     const query = `
-        SELECT * FROM \`books\`;
-      `;
-    return await this.prismaService.$queryRawUnsafe(query);
+      SELECT * FROM \`books\`;
+    `;
+    const result: any = await this.prismaService.$queryRawUnsafe(query);
+
+    const sanitizedResult = result.map((item: any) => {
+      if (item.quantity && typeof item.quantity === 'bigint') {
+        item.quantity = Number(item.quantity);
+      }
+      return item;
+    });
+
+    console.log(sanitizedResult);
+    return sanitizedResult;
   }
 
   async findById(id: string) {
@@ -47,9 +57,15 @@ export class BookService {
         SELECT * FROM \`books\` WHERE \`id\` = '${id}';
       `;
 
-    const book = await this.prismaService.$queryRawUnsafe(query);
+    const book: any = await this.prismaService.$queryRawUnsafe(query);
     if (!book) throw new NotFoundException('Book not found');
-    return book[0];
+    const sanitizedResult = book.map((item: any) => {
+      if (item.quantity && typeof item.quantity === 'bigint') {
+        item.quantity = Number(item.quantity);
+      }
+      return item;
+    });
+    return sanitizedResult[0];
   }
 
   async delete(id: string) {

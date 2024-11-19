@@ -22,7 +22,6 @@ export class BookController {
 
   @Post('create')
   @Message('Success create book')
-  @UseGuards(TokenGuard)
   @UseInterceptors(FileInterceptor('file'))
   async create(
     @UploadedFile() file: Express.Multer.File,
@@ -47,20 +46,17 @@ export class BookController {
 
   @Get()
   @Message('Success get all books')
-  @UseGuards(TokenGuard)
   async find() {
     return await this.bookService.find();
   }
 
   @Get(':id')
   @Message('Success get book by id')
-  @UseGuards(TokenGuard)
   async findById(@Param('id') id: string) {
     return this.bookService.findById(id);
   }
 
   @Put('update/:id')
-  @UseGuards(TokenGuard)
   @Message('Success update book')
   @UseInterceptors(FileInterceptor('file'))
   async update(
@@ -75,12 +71,10 @@ export class BookController {
       quantity: number;
     },
   ) {
-    console.log(file);
     return await this.bookService.update(id, file, updateBookDto);
   }
 
   @Delete('delete/:id')
-  @UseGuards(TokenGuard)
   @Message('Success delete book')
   async delete(@Param('id') id: string) {
     console.log(id);

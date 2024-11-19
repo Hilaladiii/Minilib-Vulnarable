@@ -11,44 +11,62 @@ export class BorrowService {
 
   async create(book_id: string, user_id: string) {
     const userQuery = `SELECT * FROM \`users\` WHERE \`id\` = '${user_id}';`;
-    const user = await this.prismaService.$queryRawUnsafe(userQuery);
+    const user: any = await this.prismaService.$queryRawUnsafe(userQuery);
 
-    if (!user) throw new NotFoundException('User not found');
+    if (!user || user.length === 0)
+      throw new NotFoundException('User not found');
     if (user[0].isBlocked)
       throw new BadRequestException(
         'You are blocked from system, please contact admin in offline library',
       );
 
     const bookQuery = `SELECT * FROM \`books\` WHERE \`id\` = '${book_id}';`;
-    const book = await this.prismaService.$queryRawUnsafe(bookQuery);
+    const book: any = await this.prismaService.$queryRawUnsafe(bookQuery);
 
-    if (!book) throw new NotFoundException('Book not found');
-    if (book[0].quantity == 0)
+    if (!book || book.length === 0)
+      throw new NotFoundException('Book not found');
+
+    const bookQuantity =
+      typeof book[0].quantity === 'bigint'
+        ? Number(book[0].quantity)
+        : book[0].quantity;
+
+    if (!bookQuantity || bookQuantity === 0)
       throw new NotFoundException('Book not available');
 
     const borrowQuery = `
       SELECT * FROM \`borrowings\`
       WHERE \`book_id\` = '${book_id}' AND \`user_id\` = '${user_id}' AND \`status\` = 'BORROWED';
     `;
-    const userBorrow = await this.prismaService.$queryRawUnsafe(borrowQuery);
+    const userBorrow: any =
+      await this.prismaService.$queryRawUnsafe(borrowQuery);
 
-    if (userBorrow)
-      throw new BadRequestException('You only have to borrow one book');
+    if (userBorrow && userBorrow.length > 0)
+      throw new BadRequestException('You can only borrow one book at a time');
 
     const borrowDate = new Date();
     const dueDate = new Date(borrowDate);
     dueDate.setDate(borrowDate.getDate() + 3);
 
-    const newQuantity = book[0].quantity - 1;
+    const formattedBorrowDate = borrowDate
+      .toISOString()
+      .slice(0, 19)
+      .replace('T', ' ');
+    const formattedDueDate = dueDate
+      .toISOString()
+      .slice(0, 19)
+      .replace('T', ' ');
+
+    const newQuantity = bookQuantity - 1;
 
     const borrowInsertQuery = `
-      INSERT INTO \`borrowings\` (\`due_date\`, \`borrow_date\`, \`status\`, \`user_id\`, \`book_id\`)
-      VALUES ('${dueDate.toISOString()}', '${borrowDate.toISOString()}', 'BORROWED', '${user_id}', '${book_id}');
-    `;
+  INSERT INTO \`borrowings\` (\`due_date\`, \`borrow_date\`, \`return_date\`, \`status\`, \`user_id\`, \`book_id\`)
+  VALUES ('${formattedDueDate}', '${formattedBorrowDate}', NULL, 'BORROWED', '${user_id}', '${book_id}');
+`;
 
     const updateBookQuery = `
       UPDATE \`books\`
-      SET \`quantity\` = '${newQuantity}'
+      SET \`quantity\` = '${newQuantity}' 
       WHERE \`id\` = '${book_id}';
     `;
 

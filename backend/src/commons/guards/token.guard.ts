@@ -2,7 +2,6 @@ import { ExecutionContext, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
-import { verify } from 'argon2';
 import { Request } from 'express';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 
@@ -32,7 +31,7 @@ export class TokenGuard extends AuthGuard('jwt') {
         select: { token: true },
       });
 
-      const isValidToken = await verify(user.token, token);
+      const isValidToken = user.token == token;
 
       if (!isValidToken) return false;
 

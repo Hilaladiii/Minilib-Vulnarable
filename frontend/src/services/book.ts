@@ -50,6 +50,19 @@ export async function getBooksService() {
   return response;
 }
 
+export async function getBookByIdService(id: string) {
+  const cookie = await cookies();
+  const res = await fetch(`${process.env.BASE_API_URL_VULNARABLE}/book/${id}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${cookie.get("token")?.value}`,
+    },
+    cache: "reload",
+  });
+  const response: IResponseSuccess & IResponseError = await res.json();
+  return response;
+}
+
 export async function updateBookService(
   id: string,
   data: {

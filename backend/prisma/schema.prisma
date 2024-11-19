@@ -25,7 +25,7 @@ model User{
   email String @unique
   password String @db.VarChar(100)  
   role ROLE @default(USER)
-  token String?
+  token String? @db.VarChar(255)
   createdAt DateTime @default(now())  
   isBlocked Boolean @default(false)
 
@@ -54,7 +54,7 @@ model Borrowing{
   id Int @id @default(autoincrement())
   borrow_date DateTime
   due_date DateTime 
-  return_date DateTime 
+  return_date DateTime?
   status STATUS @default(PROCESS)
 
   user_id Int 
@@ -63,7 +63,7 @@ model Borrowing{
   user User @relation(fields: [user_id],references: [id])
   book Book @relation(fields: [book_id], references: [id])
 
-  @@map("Borrowings")
+  @@map("borrowings")
 }
 
 
