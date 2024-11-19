@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"  
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL_VULNARABLE")  
+}
+
+enum ROLE{
+  ADMIN
+  USER
+}
+
+enum STATUS {
+  BORROWED
+  PROCESS
+  RETURNED
+  OVERDUE
+}
+
+model User{
+  id Int @id @default(autoincrement())
+  username String @db.VarChar(100) @unique
+  email String @unique
+  password String @db.VarChar(100)  
+  role ROLE @default(USER)
+  token String?
+  createdAt DateTime @default(now())  
+  isBlocked Boolean @default(false)
+
+  borrows Borrowing[]
+  comments Comment[]
+
+  @@map("users")
+}
+
+model Book{
+  id Int @id @default(autoincrement())
+  title String @db.VarChar(255)  
+  cover_image String
+  author_name String
+  publisher_name String
+  year_published Int  
+  quantity Int @db.UnsignedInt
+
+  comments Comment[]
+  borrows Borrowing[]  
+
+  @@map("books")
+}
+
+model Borrowing{
+  id Int @id @default(autoincrement())
+  borrow_date DateTime
+  due_date DateTime 
+  return_date DateTime 
+  status STATUS @default(PROCESS)
+
+  user_id Int 
+  book_id Int
+  comments Comment[]
+  user User @relation(fields: [user_id],references: [id])
+  book Book @relation(fields: [book_id], references: [id])
+
+  @@map("Borrowings")
+}
+
+
+model Comment {
+  id Int @id @default(autoincrement())
+  content String @db.Text
+  createdAt DateTime @default(now())
+  
+  user_id Int
+  book_id Int
+  borrowing_id Int
+  
+  user User @relation(fields: [user_id], references: [id])
+  book Book @relation(fields: [book_id], references: [id])
+  borrowing Borrowing @relation(fields: [borrowing_id], references: [id])
+  
+  @@map("comments")
+}
