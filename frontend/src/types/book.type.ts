@@ -9,9 +9,10 @@ interface IBook {
 }
 
 interface ICatalog {
-  id: string;
+  id: number;
   borrow_date: string;
   due_date: string;
   status: string;
-  book: Pick<IBook, "cover_image" | "title">;
+  title: string;
+  cover_image: string;
 }

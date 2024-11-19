@@ -121,7 +121,8 @@ export class BorrowService {
     if (borrow[0].status === 'RETURNED')
       throw new BadRequestException('Book already returned');
 
-    const newQuantity = borrow[0].quantity + 1;
+    const currentQuantity = Number(borrow[0].quantity);
+    const newQuantity = currentQuantity + 1;
 
     const returnQuery = `
       UPDATE \`borrowings\`

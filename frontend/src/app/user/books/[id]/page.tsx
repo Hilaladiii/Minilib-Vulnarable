@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { getBookByIdService } from "@/services/book";
 import { borrowBook } from "@/services/borrow";
@@ -62,13 +63,13 @@ export default function BooksDetail({ params }: { params: Params }) {
         </p>
       </div>
       <div className="mt-4">
-        <button
+        <Button
           onClick={() => handleBorrowBook(book?.id!)}
           disabled={book?.quantity! <= 0}
-          className="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:bg-gray-300"
+          className="w-full"
         >
           Borrow this book
-        </button>
+        </Button>
       </div>
     </div>
   );

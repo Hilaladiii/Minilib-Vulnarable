@@ -19,7 +19,7 @@ export async function borrowBook(id: string) {
   return response;
 }
 
-export async function returnBookService(id: string) {
+export async function returnBookService(id: number) {
   const res = await FetchApp({
     path: `borrow/return/${id}`,
     option: {

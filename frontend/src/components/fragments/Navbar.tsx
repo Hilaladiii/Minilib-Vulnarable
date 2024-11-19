@@ -40,7 +40,7 @@ export default function Navbar() {
       </Link>
       <div className="hidden space-x-10 text-charcoal dark:text-light md:flex">
         <Link
-          href={"/"}
+          href={"/user"}
           className={cn("", {
             "border-b-4 border-b-sky pb-1 transition-all duration-100":
               pathname == "/user",
@@ -49,7 +49,7 @@ export default function Navbar() {
           Home
         </Link>
         <Link
-          href={"/blog"}
+          href={"/user/user-book"}
           className={cn("", {
             "border-b-4 border-b-sky pb-1 transition-all duration-100":
               pathname.includes("/user/user-book"),
@@ -59,14 +59,7 @@ export default function Navbar() {
         </Link>
       </div>
       <div className="flex flex-row items-center gap-5">
-        <div className="group relative hidden md:flex">
-          <User01 />
-          <div className="absolute -bottom-32 hidden space-y-3 rounded bg-white p-2 shadow-md group-hover:flex group-hover:flex-col dark:bg-dark1 dark:text-light">
-            <Link href={"/"}>My Profile</Link>
-            <Link href={"/"}>My Favorite</Link>
-            <Button onClick={handleLogout}>Logout</Button>
-          </div>
-        </div>
+        <Button onClick={handleLogout}>Logout</Button>
       </div>
     </nav>
   );

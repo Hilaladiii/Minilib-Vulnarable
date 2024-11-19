@@ -14,7 +14,7 @@ export default async function UserHomePage() {
             authorName={book.author_name}
             publisherName={book.publisher_name}
             quantity={book.quantity}
-            href=""
+            href={`/user/books/${book.id}`}
             key={i}
           />
         ))}
