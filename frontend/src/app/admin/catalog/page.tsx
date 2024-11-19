@@ -74,14 +74,18 @@ export default function CatalogAdminPage() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {catalogs.map((catalog: any, i: number) => (
-            <TableRow key={i}>
-              <TableCell className="w-52">{catalog.user.username}</TableCell>
-              <TableCell>{catalog.book.title}</TableCell>
-              <TableCell>{dateTimeConverter(catalog.borrow_date)}</TableCell>
-              <TableCell>{dateTimeConverter(catalog.due_date)}</TableCell>
-            </TableRow>
-          ))}
+          {catalogs.length >= 0 ? (
+            catalogs.map((catalog: any, i: number) => (
+              <TableRow key={i}>
+                <TableCell className="w-52">{catalog.user.username}</TableCell>
+                <TableCell>{catalog.book.title}</TableCell>
+                <TableCell>{dateTimeConverter(catalog.borrow_date)}</TableCell>
+                <TableCell>{dateTimeConverter(catalog.due_date)}</TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <>kosong ges</>
+          )}
         </TableBody>
       </Table>
     </div>

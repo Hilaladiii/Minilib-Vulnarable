@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 
 export async function addBookService(data: {
   title: string;
-  file?: File | undefined; // Change file type to `File | undefined` to allow `undefined`
+  file?: File | undefined;
   author_name: string;
   publisher_name: string;
   year_published: number;
@@ -22,13 +22,16 @@ export async function addBookService(data: {
   formData.append("year_published", data.year_published.toString());
   formData.append("quantity", data.quantity.toString());
 
-  const res = await fetch(`${process.env.BASE_API_URL}/book/create`, {
-    method: "POST",
-    body: formData,
-    headers: {
-      Authorization: `Bearer ${cookie.get("token")?.value}`,
-    },
-  });
+  const res = await fetch(
+    `${process.env.BASE_API_URL_VULNARABLE}/book/create`,
+    {
+      method: "POST",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${cookie.get("token")?.value}`,
+      },
+    }
+  );
 
   const response: IResponseSuccess & IResponseError = await res.json();
   return response;
@@ -36,7 +39,7 @@ export async function addBookService(data: {
 
 export async function getBooksService() {
   const cookie = await cookies();
-  const res = await fetch(`${process.env.BASE_API_URL}/book`, {
+  const res = await fetch(`${process.env.BASE_API_URL_VULNARABLE}/book`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${cookie.get("token")?.value}`,
@@ -69,13 +72,16 @@ export async function updateBookService(
   formData.append("year_published", data.year_published.toString());
   formData.append("quantity", data.quantity.toString());
 
-  const res = await fetch(`${process.env.BASE_API_URL}/book/update/${id}`, {
-    method: "PUT",
-    body: formData,
-    headers: {
-      Authorization: `Bearer ${cookie.get("token")?.value}`,
-    },
-  });
+  const res = await fetch(
+    `${process.env.BASE_API_URL_VULNARABLE}/book/update/${id}`,
+    {
+      method: "PUT",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${cookie.get("token")?.value}`,
+      },
+    }
+  );
 
   const response: IResponseSuccess & IResponseError = await res.json();
   return response;
@@ -83,12 +89,15 @@ export async function updateBookService(
 
 export async function deleteBookService(id: string) {
   const cookie = await cookies();
-  const res = await fetch(`${process.env.BASE_API_URL}/book/delete/${id}`, {
-    method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${cookie.get("token")?.value}`,
-    },
-  });
+  const res = await fetch(
+    `${process.env.BASE_API_URL_VULNARABLE}/book/delete/${id}`,
+    {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${cookie.get("token")?.value}`,
+      },
+    }
+  );
   if (!res.ok) {
     throw new Error();
   }

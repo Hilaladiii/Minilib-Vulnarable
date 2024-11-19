@@ -21,8 +21,8 @@ export default function ModalAddBook({
     file: null as File | null,
     author_name: "",
     publisher_name: "",
-    year_published: "",
-    quantity: "",
+    year_published: 0,
+    quantity: 0,
   });
 
   const handleChange = (
@@ -47,8 +47,8 @@ export default function ModalAddBook({
     e.preventDefault();
     const payload = {
       ...bookData,
-      year_published: parseInt(bookData.year_published),
-      quantity: parseInt(bookData.quantity),
+      year_published: bookData.year_published,
+      quantity: bookData.quantity,
       file: bookData.file || undefined,
     };
     const res = await addBookService(payload);

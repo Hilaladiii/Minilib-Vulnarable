@@ -13,11 +13,6 @@ import { useToast } from "@/hooks/use-toast";
 
 const itemBar = [
   {
-    icon: dashboardIcon,
-    href: "/admin/dashboard",
-    text: "Dashboard",
-  },
-  {
     icon: catalogIcon,
     href: "/admin/catalog",
     text: "Catalog",

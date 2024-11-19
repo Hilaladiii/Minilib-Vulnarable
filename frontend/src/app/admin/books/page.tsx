@@ -60,6 +60,7 @@ export default function AdminBookPage() {
     setModal((prev) => ({ ...prev, edit: true }));
   };
 
+  console.log(books);
   return (
     <>
       <div className="flex flex-col">
@@ -87,38 +88,42 @@ export default function AdminBookPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {books.map((book, i) => (
-                <TableRow key={i}>
-                  <TableCell className="w-52">
-                    <Image
-                      src={book.cover_image}
-                      alt={book.title}
-                      width={100}
-                      height={100}
-                      className="rounded-md"
-                    />
-                  </TableCell>
-                  <TableCell>{book.title}</TableCell>
-                  <TableCell>{book.author_name}</TableCell>
-                  <TableCell>{book.publisher_name}</TableCell>
-                  <TableCell>{book.year_published}</TableCell>
-                  <TableCell>{book.quantity}</TableCell>
-                  <TableCell className="flex justify-end gap-2">
-                    <Button
-                      variant="ghost"
-                      onClick={() => handleEditBook(book.id)}
-                    >
-                      <Edit05 />
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      onClick={() => handleDeleteBook(book.id)}
-                    >
-                      <Trash01 />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {books.length >= 0 ? (
+                books.map((book, i) => (
+                  <TableRow key={i}>
+                    <TableCell className="w-52">
+                      <Image
+                        src={book.cover_image}
+                        alt={book.title}
+                        width={100}
+                        height={100}
+                        className="rounded-md"
+                      />
+                    </TableCell>
+                    <TableCell>{book.title}</TableCell>
+                    <TableCell>{book.author_name}</TableCell>
+                    <TableCell>{book.publisher_name}</TableCell>
+                    <TableCell>{book.year_published}</TableCell>
+                    <TableCell>{book.quantity}</TableCell>
+                    <TableCell className="flex justify-end gap-2">
+                      <Button
+                        variant="ghost"
+                        onClick={() => handleEditBook(book.id)}
+                      >
+                        <Edit05 />
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        onClick={() => handleDeleteBook(book.id)}
+                      >
+                        <Trash01 />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <>buku kosong</>
+              )}
             </TableBody>
           </Table>
         </div>
