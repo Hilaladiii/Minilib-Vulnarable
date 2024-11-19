@@ -7,6 +7,7 @@ import Image from "next/image";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import Modal from "../layouts/Modal";
+import Link from "next/link";
 
 export default function CardCatalog({
   id,
@@ -79,13 +80,15 @@ export default function CardCatalog({
 
   return (
     <div className="dark:bg-dark2 dark:border-dark1 max-w-sm rounded-md border-2 border-cloud p-3">
-      <Image
-        src={cover_image}
-        alt={title}
-        width={500}
-        height={500}
-        className="mb-6 h-[250px] w-[390px] rounded-md object-cover object-center"
-      />
+      <Link href={`/user/books/${book_id}`}>
+        <Image
+          src={cover_image}
+          alt={title}
+          width={500}
+          height={500}
+          className="mb-6 h-[250px] w-[390px] rounded-md object-cover object-center"
+        />
+      </Link>
       <h1 className="dark:text-light mb-4 text-2xl font-semibold">{title}</h1>
       <p className="mb-2 text-sm text-gray-500">
         Borrowed: {new Date(borrow_date).toLocaleDateString()}
