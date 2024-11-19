@@ -10,6 +10,7 @@ interface IBook {
 
 interface ICatalog {
   id: number;
+  book_id: number;
   borrow_date: string;
   due_date: string;
   status: string;

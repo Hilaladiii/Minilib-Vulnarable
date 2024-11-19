@@ -79,7 +79,7 @@ export class BorrowService {
   async find(type?: string) {
     const statusFilter = type ? `WHERE \`status\` = '${type}'` : '';
     const query = `
-      SELECT b.\`borrow_date\`, b.\`due_date\`, b.\`status\`,
+      SELECT b.\`borrow_date\`, b.\`due_date\`,b.\`return_date\`, b.\`status\`,
              u.\`username\`, bk.\`title\`
       FROM \`borrowings\` b
       JOIN \`users\` u ON b.\`user_id\` = u.\`id\`
@@ -100,7 +100,7 @@ export class BorrowService {
   async findUser(id: string) {
     const query = `
       SELECT b.\`id\`, b.\`borrow_date\`, b.\`due_date\`, b.\`status\`,
-             bk.\`title\`, bk.\`cover_image\`
+             bk.\`title\`, bk.\`cover_image\`, bk.\`id\` AS book_id
       FROM \`borrowings\` b
       JOIN \`books\` bk ON b.\`book_id\` = bk.\`id\`
       WHERE b.\`user_id\` = '${id}';
@@ -115,18 +115,27 @@ export class BorrowService {
       JOIN \`books\` bk ON b.\`book_id\` = bk.\`id\`
       WHERE b.\`id\` = '${id}';
     `;
-    const borrow = await this.prismaService.$queryRawUnsafe(borrowQuery);
+    const borrow: any = await this.prismaService.$queryRawUnsafe(borrowQuery);
 
-    if (!borrow) throw new NotFoundException('Borrow not found');
+    if (!borrow || borrow.length === 0)
+      throw new NotFoundException('Borrow not found');
     if (borrow[0].status === 'RETURNED')
       throw new BadRequestException('Book already returned');
 
     const currentQuantity = Number(borrow[0].quantity);
     const newQuantity = currentQuantity + 1;
 
+    const currentDate = new Date();
+    const formattedDate = currentDate
+      .toISOString()
+      .slice(0, 19)
+      .replace('T', ' ');
+
     const returnQuery = `
       UPDATE \`borrowings\`
-      SET \`status\` = 'RETURNED'
+      SET 
+        \`status\` = 'RETURNED',
+        \`return_date\` = '${formattedDate}'
       WHERE \`id\` = '${id}';
     `;
 

@@ -1,9 +1,12 @@
 "use client";
 
+import { CardComment } from "@/components/fragments/CardComment";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { getBookByIdService } from "@/services/book";
 import { borrowBook } from "@/services/borrow";
+import { getCommentByBookId } from "@/services/comment";
+import { IComment } from "@/types/comment.type";
 import { useEffect, useState } from "react";
 import { use } from "react";
 
@@ -12,12 +15,17 @@ export default function BooksDetail({ params }: { params: Params }) {
   const { id } = use(params);
 
   const [book, setBook] = useState<IBook>();
+  const [comments, setComments] = useState<IComment[]>([]);
 
   useEffect(() => {
     const fetchbook = async () => {
-      const res = await await getBookByIdService(id);
-      if (res.statusCode == 200) {
-        setBook(res.data);
+      const book = await getBookByIdService(id);
+      if (book.statusCode == 200) {
+        setBook(book.data);
+      }
+      const comment = await getCommentByBookId(id);
+      if (comment.statusCode == 200) {
+        setComments(comment.data);
       }
     };
     fetchbook();
@@ -70,6 +78,16 @@ export default function BooksDetail({ params }: { params: Params }) {
         >
           Borrow this book
         </Button>
+      </div>
+      <div className="mt-6">
+        <h2 className="text-2xl font-semibold mb-4">Comments</h2>
+        {comments.length > 0 ? (
+          comments.map((comment, i) => (
+            <CardComment key={i} comment={comment} />
+          ))
+        ) : (
+          <p className="text-gray-500">No comments yet.</p>
+        )}
       </div>
     </div>
   );

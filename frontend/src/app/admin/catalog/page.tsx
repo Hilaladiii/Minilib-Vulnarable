@@ -71,16 +71,22 @@ export default function CatalogAdminPage() {
             <TableHead>Book</TableHead>
             <TableHead>Borrow Date</TableHead>
             <TableHead>Due Date</TableHead>
+            {type == "RETURNED" && <TableHead>Return Date</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
           {catalogs.length >= 0 ? (
             catalogs.map((catalog: any, i: number) => (
               <TableRow key={i}>
-                <TableCell className="w-52">{catalog.user.username}</TableCell>
-                <TableCell>{catalog.book.title}</TableCell>
+                <TableCell className="w-52">{catalog.username}</TableCell>
+                <TableCell>{catalog.title}</TableCell>
                 <TableCell>{dateTimeConverter(catalog.borrow_date)}</TableCell>
                 <TableCell>{dateTimeConverter(catalog.due_date)}</TableCell>
+                {type == "RETURNED" && (
+                  <TableCell>
+                    {dateTimeConverter(catalog.return_date)}
+                  </TableCell>
+                )}
               </TableRow>
             ))
           ) : (

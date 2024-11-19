@@ -6,7 +6,7 @@ export default async function UserHomePage() {
 
   return (
     <div>
-      <div className="flex flex-wrap">
+      <div className="grid grid-cols-3 gap-5">
         {books.data.map((book: IBook, i: number) => (
           <CardBook
             title={book.title}

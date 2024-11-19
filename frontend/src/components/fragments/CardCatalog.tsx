@@ -2,11 +2,15 @@
 
 import { useToast } from "@/hooks/use-toast";
 import { returnBookService } from "@/services/borrow";
+import { createCommentService } from "@/services/comment";
 import Image from "next/image";
 import { Button } from "../ui/button";
+import { useState } from "react";
+import Modal from "../layouts/Modal";
 
 export default function CardCatalog({
   id,
+  book_id,
   borrow_date,
   due_date,
   status,
@@ -14,6 +18,7 @@ export default function CardCatalog({
   cover_image,
 }: {
   id: number;
+  book_id: number;
   borrow_date: string;
   due_date: string;
   status: string;
@@ -21,6 +26,8 @@ export default function CardCatalog({
   cover_image: string;
 }) {
   const { toast } = useToast();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [commentContent, setCommentContent] = useState("");
 
   const handleReturnBook = async (id: number) => {
     const res = await returnBookService(id);
@@ -32,6 +39,38 @@ export default function CardCatalog({
     } else {
       toast({
         title: "Failed",
+        description: res.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleCommentSubmit = async () => {
+    if (!commentContent) {
+      toast({
+        title: "Error",
+        description: "Comment cannot be empty",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const res = await createCommentService({
+      book_id,
+      borrowing_id: id,
+      content: commentContent,
+    });
+
+    if (res.statusCode === 201) {
+      toast({
+        title: "Comment added",
+        description: res.message,
+      });
+      setIsModalOpen(false);
+      setCommentContent("");
+    } else {
+      toast({
+        title: "Failed to add comment",
         description: res.message,
         variant: "destructive",
       });
@@ -69,6 +108,25 @@ export default function CardCatalog({
       {status === "BORROWED" && (
         <Button onClick={() => handleReturnBook(id)}>Return</Button>
       )}
+      {status === "RETURNED" && (
+        <Button onClick={() => setIsModalOpen(true)}>Comment</Button>
+      )}
+
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <h2 className="text-xl mb-4">Add Comment</h2>
+        <textarea
+          value={commentContent}
+          onChange={(e) => setCommentContent(e.target.value)}
+          placeholder="Write your comment here..."
+          className="w-full mb-4 p-2 border rounded-md"
+        />
+        <div className="flex justify-end space-x-4">
+          <Button onClick={() => setIsModalOpen(false)} variant="outline">
+            Cancel
+          </Button>
+          <Button onClick={handleCommentSubmit}>Submit</Button>
+        </div>
+      </Modal>
     </div>
   );
 }

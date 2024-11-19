@@ -1,7 +1,8 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { TokenGuard } from 'src/commons/guards/token.guard';
 import { GetCurrentUserId } from 'src/commons/decorators/get-current-user-id.decorator';
+import { Message } from 'src/commons/decorators/message.decorator';
 
 @Controller('comment')
 export class CommentController {
@@ -24,5 +25,11 @@ export class CommentController {
       borrowing_id: parseInt(data.borrowing_id),
       content: data.content,
     });
+  }
+
+  @Get(':id')
+  @Message('Success get comments by book id')
+  async findByBookId(@Param('id') id: number) {
+    return await this.commentService.findByBookId(id);
   }
 }
