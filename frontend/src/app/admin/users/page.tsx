@@ -37,7 +37,6 @@ export default function UserAdminPage() {
     const res = isBlocked
       ? await unBlockUserService(id)
       : await blockUserService(id);
-    console.log(res);
     if (res.statusCode == 200) {
       toast({
         title: "Success",

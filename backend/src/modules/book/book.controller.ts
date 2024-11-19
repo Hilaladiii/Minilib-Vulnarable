@@ -77,7 +77,6 @@ export class BookController {
   @Delete('delete/:id')
   @Message('Success delete book')
   async delete(@Param('id') id: string) {
-    console.log(id);
     await this.bookService.delete(id);
   }
 }

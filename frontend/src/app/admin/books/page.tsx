@@ -60,7 +60,6 @@ export default function AdminBookPage() {
     setModal((prev) => ({ ...prev, edit: true }));
   };
 
-  console.log(books);
   return (
     <>
       <div className="flex flex-col">

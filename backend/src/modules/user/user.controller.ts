@@ -11,7 +11,6 @@ export class UserController {
   async register(
     @Body() data: { email: string; username: string; password: string },
   ) {
-    console.log(data);
     return await this.userService.register(data);
   }
 

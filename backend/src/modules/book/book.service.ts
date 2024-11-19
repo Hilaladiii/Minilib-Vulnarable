@@ -48,7 +48,6 @@ export class BookService {
       return item;
     });
 
-    console.log(sanitizedResult);
     return sanitizedResult;
   }
 

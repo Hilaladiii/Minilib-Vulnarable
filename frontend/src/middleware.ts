@@ -11,6 +11,7 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
   const decodedToken: JwtPayload = jwtDecode(token!.value);
+
   if (pathname.startsWith("/admin")) {
     return NextResponse.next();
   }
@@ -19,10 +20,12 @@ export default async function middleware(req: NextRequest) {
     const url = new URL("/login", req.url);
     return NextResponse.redirect(url);
   }
+
   if (decodedToken.role != "ADMIN" && pathname.startsWith("/admin")) {
     const url = new URL("/user", req.url);
     return NextResponse.redirect(url);
   }
+
   if (decodedToken.role != "USER" && pathname.startsWith("/user")) {
     const url = new URL("/admin/books", req.url);
     return NextResponse.redirect(url);
