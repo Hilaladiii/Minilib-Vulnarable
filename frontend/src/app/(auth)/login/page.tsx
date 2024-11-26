@@ -34,7 +34,7 @@ export default function LoginPage() {
         title: "Success",
         description: res.message,
       });
-      router.push("/user/dashboard");
+      router.push("/user");
     } else {
       toast({
         title: "Failed",
