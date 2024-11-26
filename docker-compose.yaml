@@ -13,7 +13,7 @@ services:
       - minilibvulnerable-network
     entrypoint: >
       sh -c "
-        ./wait-for-it.sh db:3307 -- npx prisma generate &&
+        ./wait-for-it.sh db2:3307 -- npx prisma generate &&
         npx prisma db push &&
         npm run build &&
         npm run start:prod
@@ -34,7 +34,7 @@ services:
     command: npm run dev
 
   mysql:
-    container_name: db
+    container_name: db2
     image: mysql:latest
     ports:
       - "3307:3307"
