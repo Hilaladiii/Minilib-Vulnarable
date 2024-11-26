@@ -20,4 +20,4 @@ RUN chmod +x /usr/src/app/wait-for-it.sh
 
 EXPOSE 8888
 
-CMD ["./wait-for-it.sh", "db2:3307", "--", "npx", "prisma", "generate", "&&", "npx", "prisma", "db", "push", "&&", "npm", "run", "start:prod"]
+CMD ["./wait-for-it.sh", "db2:3306", "--", "npx", "prisma", "generate", "&&", "npx", "prisma", "db", "push", "&&", "npm", "run", "start:prod"]

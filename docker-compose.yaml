@@ -13,7 +13,7 @@ services:
       - minilibvulnerable-network
     entrypoint: >
       sh -c "
-        ./wait-for-it.sh db2:3307 -- npx prisma generate &&
+        ./wait-for-it.sh db2:3306 -- npx prisma generate &&
         npx prisma db push &&
         npm run build &&
         npm run start:prod
