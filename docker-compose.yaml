@@ -1,12 +1,54 @@
 services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.backend
+    ports:
+      - "8888:8888"
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - mysql
+    networks:
+      - minilibvulnerable-network
+    entrypoint: >
+      sh -c "
+        ./wait-for-it.sh db:3307 -- npx prisma generate &&
+        npx prisma db push &&
+        npm run build &&
+        npm run start:prod
+      "
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "4000:4000"
+    depends_on:
+      - backend
+    env_file:
+      - ./frontend/.env
+    networks:
+      - minilibvulnerable-network
+    command: npm run dev
+
   mysql:
+    container_name: db
     image: mysql:latest
     ports:
-      - 3306:3306
+      - "3307:3307"
     environment:
-      - MYSQL_ROOT_PASSWORD=root
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: minilibvulnerable
     volumes:
-      - minilibvulnarable-data:/var/lib/mysql
+      - minilibvulnerable-data:/var/lib/mysql
+    networks:
+      - minilibvulnerable-network
 
 volumes:
-  minilibvulnarable-data:
+  minilibvulnerable-data:
+
+networks:
+  minilibvulnerable-network:
+    driver: bridge
