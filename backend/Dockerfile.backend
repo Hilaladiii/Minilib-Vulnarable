@@ -12,6 +12,8 @@ FROM node:20.18-alpine
 
 WORKDIR /usr/src/app
 
+RUN apk add --no-cache openssl
+
 COPY --from=BUILDER /usr/src/app /usr/src/app/
 
 COPY wait-for-it.sh /usr/src/app/wait-for-it.sh
@@ -20,4 +22,4 @@ RUN chmod +x /usr/src/app/wait-for-it.sh
 
 EXPOSE 8888
 
-CMD ["./wait-for-it.sh", "db2:3306", "--", "&&", "npx", "prisma", "db", "push", "&&", "npm", "run", "start:prod"]
+CMD ["sh", "-c", "./wait-for-it.sh db:3306 -- npx prisma generate && npx prisma db push && npm run start:prod"]
